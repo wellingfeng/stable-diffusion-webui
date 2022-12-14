@@ -404,6 +404,7 @@ class ScriptRunner:
 
 scripts_txt2img = ScriptRunner()
 scripts_img2img = ScriptRunner()
+scripts_img2tile = ScriptRunner()
 scripts_current: ScriptRunner = None
 
 

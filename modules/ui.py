@@ -626,11 +626,32 @@ Requested path was: {f}
 def create_ui():
     import modules.img2img
     import modules.txt2img
+    import modules.image2tile
 
     reload_javascript()
 
     parameters_copypaste.reset()
 
+    modules.scripts.scripts_current = modules.scripts.scripts_img2tile
+    modules.scripts.scripts_img2tile.initialize_scripts(is_img2img=False)
+    with gr.Blocks(analytics_enabled=False) as img2tile_interface:
+        with gr.Row():
+            init_img2tile_img = gr.Image(label="Image for img2img", elem_id="img2img_image", show_label=False, source="upload", interactive=True, type="pil", tool=cmd_opts.gradio_img2img_tool).style(height=480)
+            prompt_img2tile_result = gr.outputs.Textbox(label="Prompt")
+        with gr.Row():
+            submit_img2tile = gr.Button('Generate', elem_id="submit_img2tile", variant='primary')
+
+        submit_img2tile.click(
+            fn=wrap_gradio_gpu_call(modules.image2tile.image2tile),
+            # _js="get_extras_tab_index",
+            inputs=[
+                init_img2tile_img,
+                prompt_img2tile_result
+            ],
+            outputs=[
+
+            ]
+        )
     modules.scripts.scripts_current = modules.scripts.scripts_txt2img
     modules.scripts.scripts_txt2img.initialize_scripts(is_img2img=False)
 
@@ -639,8 +660,6 @@ def create_ui():
 
         dummy_component = gr.Label(visible=False)
         txt_prompt_img = gr.File(label="", elem_id="txt2img_prompt_image", file_count="single", type="bytes", visible=False)
-
-
 
 
         with gr.Row(elem_id='txt2img_progress_row'):
@@ -1581,6 +1600,7 @@ def create_ui():
             column.__exit__()
 
     interfaces = [
+        (img2tile_interface, "img2tile", "img2tile"),
         (txt2img_interface, "txt2img", "txt2img"),
         (img2img_interface, "img2img", "img2img"),
         (extras_interface, "Extras", "extras"),
@@ -1747,6 +1767,7 @@ def create_ui():
             apply_field(x, 'value', lambda val: val in x.choices, getattr(x, 'init_field', None))
             apply_field(x, 'visible')
 
+    visit(img2tile_interface, loadsave, "img2tile")
     visit(txt2img_interface, loadsave, "txt2img")
     visit(img2img_interface, loadsave, "img2img")
     visit(extras_interface, loadsave, "extras")

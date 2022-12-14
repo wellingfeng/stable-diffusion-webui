@@ -125,6 +125,11 @@ function submit_img2img(){
     return res
 }
 
+function submit_img2tile(){
+    requestProgress('img2tile')
+
+    return create_submit_args(arguments)
+}
 
 function ask_for_style_name(_, prompt_text, negative_prompt_text) {
     name_ = prompt('Style name:')
