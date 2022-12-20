@@ -636,17 +636,21 @@ def create_ui():
     modules.scripts.scripts_img2tile.initialize_scripts(is_img2img=False)
     with gr.Blocks(analytics_enabled=False) as img2tile_interface:
         with gr.Row():
-            init_img2tile_img = gr.Image(label="Image for img2img", elem_id="img2img_image", show_label=False, source="upload", interactive=True, type="pil", tool=cmd_opts.gradio_img2img_tool).style(height=480)
-            prompt_img2tile_result = gr.outputs.Textbox(label="Prompt")
+            # init_img2tile_img = gr.Image(label="Image for img2tile", elem_id="img2tile_image", show_label=False, source="upload", interactive=True, type="pil", tool=cmd_opts.gradio_img2img_tool).style(height=480)
+            # prompt_img2tile_result = gr.outputs.Textbox(label="generatedPrompt")
+            gradio.inputs.File(file_count="directory")
+            gradio.inputs.File(file_count="multiple")
         with gr.Row():
             submit_img2tile = gr.Button('Generate', elem_id="submit_img2tile", variant='primary')
+
+
 
         submit_img2tile.click(
             fn=wrap_gradio_gpu_call(modules.image2tile.image2tile),
             # _js="get_extras_tab_index",
             inputs=[
-                init_img2tile_img,
-                prompt_img2tile_result
+                # init_img2tile_img,
+                # prompt_img2tile_result
             ],
             outputs=[
 
