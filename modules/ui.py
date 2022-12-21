@@ -638,24 +638,37 @@ def create_ui():
         with gr.Row():
             # init_img2tile_img = gr.Image(label="Image for img2tile", elem_id="img2tile_image", show_label=False, source="upload", interactive=True, type="pil", tool=cmd_opts.gradio_img2img_tool).style(height=480)
             # prompt_img2tile_result = gr.outputs.Textbox(label="generatedPrompt")
-            gradio.inputs.File(file_count="directory")
-            gradio.inputs.File(file_count="multiple")
+            init_inputs_imgs = gradio.inputs.File(file_count="multiple")
+            prompt_img2tile_result = gr.Textbox(label="generatedPrompt", interactive=True)
+            # out_gradio.inputs.File(file_count="multiple")
         with gr.Row():
-            submit_img2tile = gr.Button('Generate', elem_id="submit_img2tile", variant='primary')
-
-
+            submit_img2tile = gr.Button('生成文字描述', elem_id="submit_img2tile", variant='primary')
 
         submit_img2tile.click(
-            fn=wrap_gradio_gpu_call(modules.image2tile.image2tile),
-            # _js="get_extras_tab_index",
+            fn=modules.image2tile.image2tile,
             inputs=[
-                # init_img2tile_img,
-                # prompt_img2tile_result
+                init_inputs_imgs,
             ],
             outputs=[
-
+                prompt_img2tile_result
             ]
         )
+        with gr.Row():
+            result_gallery = gr.Gallery(label='Output', show_label=False, elem_id=f"out_gallery").style(grid=4)
+
+        with gr.Row():
+            submit_generate_imgs = gr.Button('生成图片', elem_id="submit_generate_imgs", variant='primary')
+
+        submit_generate_imgs.click(
+            fn=modules.image2tile.generateTileImgs,
+            inputs=[
+                prompt_img2tile_result,
+            ],
+            outputs=[
+                result_gallery
+            ]
+        )
+
     modules.scripts.scripts_current = modules.scripts.scripts_txt2img
     modules.scripts.scripts_txt2img.initialize_scripts(is_img2img=False)
 
