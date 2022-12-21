@@ -164,9 +164,9 @@ def prepareclip_interrogator():
         ['pip', 'install', '-e', 'git+https://github.com/pharmapsychotic/BLIP.git@lib#egg=blip'],
         # ['pip', 'install', 'clip-interrogator']
     ]
-    for cmd in install_cmds:
-        print(cmd)
-        print(subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode('utf-8'))
+    # for cmd in install_cmds:
+    #     print(cmd)
+    #     print(subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode('utf-8'))
 
     # clip_model_name = 'ViT-L-14/openai' #@param ["ViT-L-14/openai", "ViT-H-14/laion2b_s32b_b79k"]
     # print("Download preprocessed cache files...")
