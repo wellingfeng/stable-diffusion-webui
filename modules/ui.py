@@ -640,11 +640,11 @@ def create_ui():
         with gr.Row():
             submit_img2tile = gr.Button('生成文字描述', elem_id="submit_img2tile", variant='primary')
         with gr.Row():
-            prompt_english_result = gr.Textbox(label="generatedPrompt", lines=50, interactive=True)
-            prompt_chinese_result = gr.Textbox(label="generatedChinesePrompt", lines=50, interactive=True)
-        with gr.Row():
-            submit_english_chinese = gr.Button('英转中', elem_id="submit_english_chinese", variant='primary')
-            submit_chinese_english = gr.Button('中转英', elem_id="submit_chinese_english", variant='primary')
+            prompt_english_result = gr.Textbox(label="generatedEnglishPrompt", lines=30, interactive=True)
+        #     prompt_chinese_result = gr.Textbox(label="generatedChinesePrompt", lines=30, interactive=True)
+        # with gr.Row():
+        #     submit_english_chinese = gr.Button('英转中', elem_id="submit_english_chinese", variant='primary')
+        #     submit_chinese_english = gr.Button('中转英', elem_id="submit_chinese_english", variant='primary')
 
         submit_img2tile.click(
             fn=modules.image2tile.image2tile,
@@ -656,25 +656,25 @@ def create_ui():
             ]
         )
 
-        submit_english_chinese.click(
-            fn=modules.image2tile.english2chinse,
-            inputs=[
-                prompt_english_result,
-            ],
-            outputs=[
-                prompt_chinese_result
-            ]
-        )
+        # submit_english_chinese.click(
+        #     fn=modules.image2tile.english2chinse,
+        #     inputs=[
+        #         prompt_english_result,
+        #     ],
+        #     outputs=[
+        #         prompt_chinese_result
+        #     ]
+        # )
 
-        submit_chinese_english.click(
-            fn=modules.image2tile.chinese2english,
-            inputs=[
-                prompt_chinese_result,
-            ],
-            outputs=[
-                prompt_english_result
-            ]
-        )
+        # submit_chinese_english.click(
+        #     fn=modules.image2tile.chinese2english,
+        #     inputs=[
+        #         prompt_chinese_result,
+        #     ],
+        #     outputs=[
+        #         prompt_english_result
+        #     ]
+        # )
 
     modules.scripts.scripts_current = modules.scripts.scripts_txt2img
     modules.scripts.scripts_txt2img.initialize_scripts(is_img2img=False)

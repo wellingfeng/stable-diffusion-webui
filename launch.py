@@ -158,12 +158,29 @@ def run_extensions_installers(settings_file):
 
 def prepareclip_interrogator():
     print("prepareclip_interrogator")
-    install_cmds = [
-        ['pip', 'install', 'ftfy', 'gradio', 'regex', 'tqdm', 'transformers==4.21.2', 'timm', 'fairscale', 'requests'],
-        ['pip', 'install', 'open_clip_torch'],
-        ['pip', 'install', '-e', 'git+https://github.com/pharmapsychotic/BLIP.git@lib#egg=blip'],
-        # ['pip', 'install', 'clip-interrogator']
-    ]
+    # if not is_installed("ftfy"):
+    #     run_pip("install ftfy", "ftfy")
+    # if not is_installed("tqdm"):
+    #     run_pip("install tqdm", "tqdm")
+    # if not is_installed("timm"):
+    #     run_pip("install timm", "timm")    
+    # if not is_installed("fairscale"):
+    #     run_pip("install fairscale", "fairscale")
+    # if not is_installed("requests"):
+    #     run_pip("install requests", "requests")
+    # if not is_installed("open_clip_torch"):
+    #     run_pip("install open_clip_torch", "open_clip_torch")
+    # if not is_installed("BLIP"):
+    #     run_pip("install -e git+https://github.com/pharmapsychotic/BLIP.git@lib#egg=blip", "BLIP")
+    # if not is_installed("clip-interrogator"):
+    #     run_pip("install clip-interrogator", "clip-interrogator")       
+    
+    # install_cmds = [
+    #     ['pip', 'install', 'ftfy', 'gradio', 'regex', 'tqdm', 'transformers==4.21.2', 'timm', 'fairscale', 'requests'],
+    #     ['pip', 'install', 'open_clip_torch'],
+    #     ['pip', 'install', '-e', 'git+https://github.com/pharmapsychotic/BLIP.git@lib#egg=blip'],
+    #     # ['pip', 'install', 'clip-interrogator']
+    # ]
     # for cmd in install_cmds:
     #     print(cmd)
     #     print(subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode('utf-8'))
@@ -282,7 +299,7 @@ def prepare_environment():
     run_extensions_installers(settings_file=args.ui_settings_file)
 
     prepareclip_interrogator()
-    prepare_googletrans()
+    # prepare_googletrans()
     
     if update_check:
         version_check(commit)
