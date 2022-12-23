@@ -636,13 +636,15 @@ def create_ui():
     modules.scripts.scripts_img2tile.initialize_scripts(is_img2img=False)
     with gr.Blocks(analytics_enabled=False) as img2tile_interface:
         with gr.Row():
-            # init_img2tile_img = gr.Image(label="Image for img2tile", elem_id="img2tile_image", show_label=False, source="upload", interactive=True, type="pil", tool=cmd_opts.gradio_img2img_tool).style(height=480)
-            # prompt_img2tile_result = gr.outputs.Textbox(label="generatedPrompt")
             init_inputs_imgs = gradio.inputs.File(file_count="multiple")
-            prompt_img2tile_result = gr.Textbox(label="generatedPrompt", interactive=True)
-            # out_gradio.inputs.File(file_count="multiple")
         with gr.Row():
             submit_img2tile = gr.Button('生成文字描述', elem_id="submit_img2tile", variant='primary')
+        with gr.Row():
+            prompt_english_result = gr.Textbox(label="generatedPrompt", lines=50, interactive=True)
+            prompt_chinese_result = gr.Textbox(label="generatedChinesePrompt", lines=50, interactive=True)
+        with gr.Row():
+            submit_english_chinese = gr.Button('英转中', elem_id="submit_english_chinese", variant='primary')
+            submit_chinese_english = gr.Button('中转英', elem_id="submit_chinese_english", variant='primary')
 
         submit_img2tile.click(
             fn=modules.image2tile.image2tile,
@@ -650,22 +652,27 @@ def create_ui():
                 init_inputs_imgs,
             ],
             outputs=[
-                prompt_img2tile_result
+                prompt_english_result
             ]
         )
-        with gr.Row():
-            result_gallery = gr.Gallery(label='Output', show_label=False, elem_id=f"out_gallery").style(grid=4)
 
-        with gr.Row():
-            submit_generate_imgs = gr.Button('生成图片', elem_id="submit_generate_imgs", variant='primary')
-
-        submit_generate_imgs.click(
-            fn=modules.image2tile.generateTileImgs,
+        submit_english_chinese.click(
+            fn=modules.image2tile.english2chinse,
             inputs=[
-                prompt_img2tile_result,
+                prompt_english_result,
             ],
             outputs=[
-                result_gallery
+                prompt_chinese_result
+            ]
+        )
+
+        submit_chinese_english.click(
+            fn=modules.image2tile.chinese2english,
+            inputs=[
+                prompt_chinese_result,
+            ],
+            outputs=[
+                prompt_english_result
             ]
         )
 

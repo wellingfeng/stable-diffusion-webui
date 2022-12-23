@@ -188,6 +188,9 @@ def prepareclip_interrogator():
     #     print(url)
     #     print(subprocess.run(['wget', url, '-P', 'cache'], stdout=subprocess.PIPE).stdout.decode('utf-8'))
 
+def prepare_googletrans():
+    print(subprocess.run(["pip", "install", "googletrans==4.0.0-rc1"], stdout=subprocess.PIPE).stdout.decode('utf-8'))
+
 def prepare_environment():
     torch_command = os.environ.get('TORCH_COMMAND', "pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113")
     requirements_file = os.environ.get('REQS_FILE', "requirements_versions.txt")
@@ -279,6 +282,7 @@ def prepare_environment():
     run_extensions_installers(settings_file=args.ui_settings_file)
 
     prepareclip_interrogator()
+    prepare_googletrans()
     
     if update_check:
         version_check(commit)

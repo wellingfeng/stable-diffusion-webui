@@ -7,6 +7,8 @@ import modules.shared as shared
 import modules.processing as processing
 from modules.ui import plaintext_to_html
 from PIL import Image
+from googletrans import Translator
+translator = Translator(service_urls=['translate.google.com',])
 
 from clip_interrogator.clip_interrogator.clip_interrogator import Config, Interrogator
 clip_model_name = 'ViT-L-14/openai'
@@ -34,56 +36,73 @@ def image2tile(files):
             outStr += inference(image, 'best') + "\n\n"
     return outStr
 
+def english2chinse(prompt_english_result):
+    return translateLanguage(prompt_english_result, src='en', dest='zh-cn')
+
+def chinese2english(prompt_chinese_result):
+    return translateLanguage(prompt_chinese_result, src='zh-cn', dest='en')
+
+def translateLanguage(text, src, dest):
+    dstText = ""
+    promptItems = text.split("\n\n")
+    for item in promptItems:
+        trans=translator.translate(item, src=src, dest=dest)
+        dstText += trans.text + "\n\n"
+    return dstText
+
 def generateTileImgs(prompt_img2tile_result):
-    promptItem = prompt_img2tile_result.split("\n\n")[0]
-    p = StableDiffusionProcessingTxt2Img(
-        sd_model=shared.sd_model,
-        outpath_samples=opts.outdir_samples or opts.outdir_txt2img_samples,
-        outpath_grids=opts.outdir_grids or opts.outdir_txt2img_grids,
-        prompt=promptItem,
-        styles=[None, None],
-        negative_prompt="",
-        seed=-1,
-        subseed=-1,
-        subseed_strength=0,
-        seed_resize_from_h=0,
-        seed_resize_from_w=0,
-        seed_enable_extras=False,
-        sampler_name=sd_samplers.samplers[0].name,
-        batch_size=1,
-        n_iter=1,
-        steps=20,
-        cfg_scale=7,
-        width=512,
-        height=512,
-        restore_faces=False,
-        tiling=True,
-        enable_hr=False,
-        denoising_strength=0,
-        firstphase_width=0,
-        firstphase_height=0.7,
-    )
+    promptItems = prompt_img2tile_result.split("\n\n")
+    images = []
+    for item in promptItems:
+        p = StableDiffusionProcessingTxt2Img(
+            sd_model=shared.sd_model,
+            outpath_samples=opts.outdir_samples or opts.outdir_txt2img_samples,
+            outpath_grids=opts.outdir_grids or opts.outdir_txt2img_grids,
+            prompt=item,
+            styles=[None, None],
+            negative_prompt="",
+            seed=-1,
+            subseed=-1,
+            subseed_strength=0,
+            seed_resize_from_h=0,
+            seed_resize_from_w=0,
+            seed_enable_extras=False,
+            sampler_name=sd_samplers.samplers[0].name,
+            batch_size=1,
+            n_iter=1,
+            steps=20,
+            cfg_scale=7,
+            width=512,
+            height=512,
+            restore_faces=False,
+            tiling=True,
+            enable_hr=False,
+            denoising_strength=0,
+            firstphase_width=0,
+            firstphase_height=0.7,
+        )
 
-    p.scripts = modules.scripts.scripts_txt2img
-    p.script_args = None
+        p.scripts = modules.scripts.scripts_txt2img
+        p.script_args = None
 
-    if cmd_opts.enable_console_prompts:
-        print(f"\nimg2tile: {promptItem}", file=shared.progress_print_out)
+        if cmd_opts.enable_console_prompts:
+            print(f"\nimg2tile: {item}", file=shared.progress_print_out)
 
-    processed = modules.scripts.scripts_txt2img.run(p,[None])
+        processed = modules.scripts.scripts_txt2img.run(p,0)
 
-    if processed is None:
-        processed = process_images(p)
+        if processed is None:
+            processed = process_images(p)
 
-    p.close()
+        p.close()
 
-    shared.total_tqdm.clear()
+        shared.total_tqdm.clear()
 
-    generation_info_js = processed.js()
-    if opts.samples_log_stdout:
-        print(generation_info_js)
+        generation_info_js = processed.js()
+        if opts.samples_log_stdout:
+            print(generation_info_js)
 
-    if opts.do_not_show_images:
-        processed.images = []
+        if opts.do_not_show_images:
+            processed.images = []
 
-    return processed.images, generation_info_js, plaintext_to_html(processed.info)
+        images += processed.images
+    return images #processed.images , generation_info_js, plaintext_to_html(processed.info)
