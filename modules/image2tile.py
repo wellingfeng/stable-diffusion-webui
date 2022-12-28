@@ -7,8 +7,6 @@ import modules.shared as shared
 import modules.processing as processing
 from modules.ui import plaintext_to_html
 from PIL import Image
-# from googletrans import Translator
-# translator = Translator(service_urls=['translate.google.com',])
 
 from clip_interrogator.clip_interrogator.clip_interrogator import Config, Interrogator
 clip_model_name = 'ViT-L-14/openai'
@@ -17,10 +15,10 @@ config.blip_num_beams = 64
 config.blip_offload = False
 config.clip_model_name = clip_model_name
 ci = Interrogator(config)
+ci.config.chunk_size = 2048 if ci.config.clip_model_name == "ViT-L-14/openai" else 1024
+ci.config.flavor_intermediate_count = 2048 if ci.config.clip_model_name == "ViT-L-14/openai" else 1024
 
 def inference(image, mode, best_max_flavors=32):
-    ci.config.chunk_size = 2048 if ci.config.clip_model_name == "ViT-L-14/openai" else 1024
-    ci.config.flavor_intermediate_count = 2048 if ci.config.clip_model_name == "ViT-L-14/openai" else 1024
     image = image.convert('RGB')
     if mode == 'best':
         return ci.interrogate(image, max_flavors=int(best_max_flavors))
